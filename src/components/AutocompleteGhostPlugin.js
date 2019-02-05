@@ -1,11 +1,11 @@
-import React from 'react';
+import React from "react";
 
-import GhostText from './GhostText';
+import GhostText from "./GhostText";
 
 // TODO: handle remove ghost text on blur
 
 function getGhostNodes(editor) {
-  return editor.value.document.getInlinesByType('ghost');
+  return editor.value.document.getInlinesByType("ghost");
 }
 
 function insertGhostNode(editor, suggestedText) {
@@ -13,20 +13,20 @@ function insertGhostNode(editor, suggestedText) {
 
   return editor
     .insertInline({
-      type: 'ghost',
+      type: "ghost",
       nodes: [
         {
-          object: 'text',
-          key: 'ghost',
+          object: "text",
+          key: "ghost",
           leaves: [
             {
-              object: 'leaf',
+              object: "leaf",
               text: suggestedText,
-              marks: [],
-            },
-          ],
-        },
-      ],
+              marks: []
+            }
+          ]
+        }
+      ]
     })
     .select(originalSelection); // move cursor back
 }
@@ -34,7 +34,7 @@ function insertGhostNode(editor, suggestedText) {
 function removeGhostNodes(editor) {
   const ghostNodes = getGhostNodes(editor);
   ghostNodes.forEach(g => {
-    console.log('removing ghost text: ' + g.text);
+    console.log("removing ghost text: " + g.text);
     return editor.removeNodeByKey(g.key);
   });
 }
@@ -44,7 +44,7 @@ function AutocompleteGhostPlugin(getSuggestions) {
     const ghostNodes = editor.getGhostNodes();
 
     // if the user types 'Tab' and ghost text is displayed, un-ghost the text
-    if (event.key === 'Tab' && ghostNodes.size) {
+    if (event.key === "Tab" && ghostNodes.size) {
       const selectionOffset = editor.value.selection.start.offset;
 
       ghostNodes.forEach(g => {
@@ -67,10 +67,10 @@ function AutocompleteGhostPlugin(getSuggestions) {
     const text = editor.value.texts.get(0).text + event.key;
 
     // TODO: don't do this when user presses non-character key
-    console.log('remove ghost text because someting was typed');
+    console.log("remove ghost text because someting was typed");
     editor.removeGhostNodes();
 
-    if (text.length < 3) return next();
+    if (text.length < 2) return next();
     const suggestedText = getSuggestedText(text, getSuggestions());
     if (!suggestedText) return next();
 
@@ -87,7 +87,9 @@ function AutocompleteGhostPlugin(getSuggestions) {
     // remove the ghost node
     const selectionOffset = editor.value.selection.start.offset;
     const ghostNodes = editor.getGhostNodes();
-    const ghostOffset = ghostNodes.size ? editor.value.focusBlock.getOffset(ghostNodes.get(0).key) : -1;
+    const ghostOffset = ghostNodes.size
+      ? editor.value.focusBlock.getOffset(ghostNodes.get(0).key)
+      : -1;
     if (ghostOffset !== selectionOffset) {
       editor.removeGhostNodes();
     }
@@ -100,7 +102,7 @@ function AutocompleteGhostPlugin(getSuggestions) {
 
   function renderNode(props, editor, next) {
     switch (props.node.type) {
-      case 'ghost':
+      case "ghost":
         return <GhostText {...props} />;
       default:
         return next();
@@ -116,7 +118,7 @@ function AutocompleteGhostPlugin(getSuggestions) {
         return suggestion.substring(text.length);
       }
     }
-    return '';
+    return "";
   }
 
   return {
@@ -124,7 +126,7 @@ function AutocompleteGhostPlugin(getSuggestions) {
     queries: { getGhostNodes },
     onKeyDown,
     onSelect,
-    renderNode,
+    renderNode
   };
 }
 
