@@ -11,12 +11,27 @@ body {
   background-color: rgb(240, 240, 240);
 }
 
-.App {
+.editor {
   color: rgb(17, 17, 17);
-  max-width: 740px;
+  max-width: 480px;
   background-color: rgb(255, 255, 255);
   box-shadow: rgba(118, 143, 255, 0.1) 0px 16px 24px 0px;
   padding: 40px;
   margin: 65px auto 45px;
   border-radius: 4.5px;
+}
+
+.form {
+  max-width: 480px;
+  margin: 65px auto 45px;
+}
+
+label {
+  text-align: right;
+  vertical-align: top;
+}
+
+textarea {
+  height: 100px;
+  width: 300px;
 }

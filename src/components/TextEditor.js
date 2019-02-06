@@ -1,19 +1,13 @@
 import React, { Component } from 'react';
 
+import memoize from 'fast-memoize';
 import { Editor } from 'slate-react';
 import { Value } from 'slate';
 
 import AutocompleteGhostPlugin from './AutocompleteGhostPlugin';
 
-const getSuggestions = () => [
-  'How can I help you today?',
-  'Can you give me a moment to look into that?',
-  'Let me look into that for you.',
-  'Thanks for contacting us!',
-  'Thank you for contacting us!',
-];
-
-const plugins = [AutocompleteGhostPlugin(getSuggestions)];
+const getPlugins = (phrases, minMatchingChar) => [AutocompleteGhostPlugin(phrases, minMatchingChar)];
+const getPluginsMemoized = memoize(getPlugins);
 
 export default class TextEditor extends Component {
   state = {
@@ -44,6 +38,13 @@ export default class TextEditor extends Component {
   };
 
   render() {
-    return <Editor autoFocus value={this.state.value} onChange={this.onChange} plugins={plugins} />;
+    return (
+      <Editor
+        autoFocus
+        value={this.state.value}
+        onChange={this.onChange}
+        plugins={getPluginsMemoized(this.props.phrases, this.props.minMatchingChar)}
+      />
+    );
   }
 }
