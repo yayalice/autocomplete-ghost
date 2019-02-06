@@ -22,7 +22,7 @@ export default class TextEditor extends Component {
                 object: 'text',
                 leaves: [
                   {
-                    text: 'Hi, ',
+                    text: 'Hi! ',
                   },
                 ],
               },

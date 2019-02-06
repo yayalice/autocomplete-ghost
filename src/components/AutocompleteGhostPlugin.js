@@ -70,7 +70,6 @@ function AutocompleteGhostPlugin(suggestedPhrases, minMatchingChar) {
     console.log('remove ghost text because someting was typed');
     editor.removeGhostNodes();
 
-    if (text.length < minMatchingChar) return next();
     const suggestedText = getSuggestedText(text, suggestedPhrases);
     if (!suggestedText) return next();
 
@@ -115,10 +114,15 @@ function AutocompleteGhostPlugin(suggestedPhrases, minMatchingChar) {
   /* Helpers */
 
   function getSuggestedText(text, suggestions) {
+    let sentences = text.split(/[.!?]/);
+    let sentenceText = sentences[sentences.length - 1].trimLeft();
+
+    if (sentenceText.length < minMatchingChar) return '';
+
     for (var i = 0; i < suggestions.length; i++) {
       const suggestion = suggestions[i];
-      if (suggestion.startsWith(text)) {
-        return suggestion.substring(text.length);
+      if (suggestion.toLowerCase().startsWith(sentenceText.toLowerCase())) {
+        return suggestion.substring(sentenceText.length);
       }
     }
     return '';
