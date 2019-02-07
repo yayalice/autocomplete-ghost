@@ -1,3 +1,4 @@
 import TextEditor from './TextEditor';
+import Checkbox from './Checkbox';
 
-export { TextEditor };
+export { Checkbox, TextEditor };

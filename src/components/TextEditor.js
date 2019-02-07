@@ -6,7 +6,9 @@ import { Value } from 'slate';
 
 import AutocompleteGhostPlugin from './AutocompleteGhostPlugin';
 
-const getPlugins = (phrases, minMatchingChar) => [AutocompleteGhostPlugin(phrases, minMatchingChar)];
+const getPlugins = (phrases, minMatchingChar, shouldAutocompleteOnTab, shouldAutocompleteOnEnter) => [
+  AutocompleteGhostPlugin(phrases, minMatchingChar, shouldAutocompleteOnTab, shouldAutocompleteOnEnter),
+];
 const getPluginsMemoized = memoize(getPlugins);
 
 export default class TextEditor extends Component {
@@ -43,7 +45,12 @@ export default class TextEditor extends Component {
         autoFocus
         value={this.state.value}
         onChange={this.onChange}
-        plugins={getPluginsMemoized(this.props.phrases, this.props.minMatchingChar)}
+        plugins={getPluginsMemoized(
+          this.props.phrases,
+          this.props.minMatchingChar,
+          this.props.shouldAutocompleteOnTab,
+          this.props.shouldAutocompleteOnEnter
+        )}
       />
     );
   }

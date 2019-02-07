@@ -39,26 +39,41 @@ function removeGhostNodes(editor) {
   });
 }
 
-function AutocompleteGhostPlugin(suggestedPhrases, minMatchingChar) {
+function AutocompleteGhostPlugin(
+  suggestedPhrases,
+  minMatchingChar,
+  shouldAutocompleteOnTab,
+  shouldAutocompleteOnEnter
+) {
   function onKeyDown(event, editor, next) {
     const ghostNodes = editor.getGhostNodes();
 
-    // if the user types 'Tab' and ghost text is displayed, un-ghost the text
-    if (event.key === 'Tab' && ghostNodes.size) {
+    // if the user types 'Tab' or 'Enter' and ghost text is displayed, un-ghost the text
+    if (
+      ((event.key === 'Tab' && shouldAutocompleteOnTab) || (event.key === 'Enter' && shouldAutocompleteOnEnter)) &&
+      ghostNodes.size
+    ) {
       const selectionOffset = editor.value.selection.start.offset;
 
+      let didAutocomplete = false;
       ghostNodes.forEach(g => {
         const ghostOffset = editor.value.focusBlock.getOffset(g.key);
         editor.removeNodeByKey(g.key);
 
         // make sure we are still at the start of the ghost text
         if (ghostOffset === selectionOffset) {
-          event.preventDefault();
           editor.insertText(g.text);
 
-          return;
+          event.preventDefault();
+          event.stopPropagation();
+          didAutocomplete = true;
         }
       });
+      if (didAutocomplete) {
+        // must return false to prevent <Enter> from inserting new line
+        // https://github.com/ianstormtaylor/slate/issues/1345
+        return false;
+      }
     }
 
     // TODO: move cursor to start when ghost text is clicked

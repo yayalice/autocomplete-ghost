@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { TextEditor } from './components';
+import { TextEditor, Checkbox } from './components';
 import './App.css';
 
 class App extends Component {
@@ -12,10 +12,20 @@ class App extends Component {
       'Thanks for contacting us!',
       'Thank you for contacting us!',
     ],
+    shouldAutocompleteOnTab: true,
+    shouldAutocompleteOnEnter: true,
   };
 
   handleMinMatchingCharChange = newValue => {
     this.setState({ minMatchingChar: newValue.target.value });
+  };
+
+  handleChangeShouldAutocompleteOnTab = newValue => {
+    this.setState({ shouldAutocompleteOnTab: newValue.target.checked });
+  };
+
+  handleChangeShouldAutocompleteOnEnter = newValue => {
+    this.setState({ shouldAutocompleteOnEnter: newValue.target.checked });
   };
 
   handlePhraseChanges = newValue => {
@@ -28,6 +38,26 @@ class App extends Component {
     return (
       <div className="App">
         <div className="form">
+          <div>
+            <label key="shouldAutocompleteOnTab">
+              Autocomplete on Tab
+              <Checkbox
+                name="shouldAutocompleteOnTab"
+                checked={this.state.shouldAutocompleteOnTab}
+                onChange={this.handleChangeShouldAutocompleteOnTab}
+              />
+            </label>
+          </div>
+          <div>
+            <label key="shouldAutocompleteOnEnter">
+              Autocomplete on Enter
+              <Checkbox
+                name="shouldAutocompleteOnEnter"
+                checked={this.state.shouldAutocompleteOnEnter}
+                onChange={this.handleChangeShouldAutocompleteOnEnter}
+              />
+            </label>
+          </div>
           <div>
             <label>
               Min matching characters:
@@ -42,7 +72,12 @@ class App extends Component {
           </div>
         </div>
         <div className="editor">
-          <TextEditor minMatchingChar={this.state.minMatchingChar} phrases={this.state.phrases} />
+          <TextEditor
+            minMatchingChar={this.state.minMatchingChar}
+            phrases={this.state.phrases}
+            shouldAutocompleteOnTab={this.state.shouldAutocompleteOnTab}
+            shouldAutocompleteOnEnter={this.state.shouldAutocompleteOnEnter}
+          />
         </div>
       </div>
     );
